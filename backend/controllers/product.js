@@ -1,4 +1,5 @@
 const express = require("express");
+const { Op } = require("sequelize");
 const ProductDB = require("../models").Products;
 
 const controller = {
@@ -8,56 +9,63 @@ const controller = {
 			price: req.body.price,
 			quantity: req.body.quantity,
 			description: req.body.description,
-			coments: req.body.coments,
+			comments: req.body.comments,
 			rating: req.body.rating,
 		};
 
 		const errors = {};
 
 		if (!product.name) {
-			errors.productName = "No product name";
-			console.log("Insert product name");
+			errors.productName = "Insert product name";
+			console.log("No product name");
 		} else if (!product.name.match("^.{2,50}$")) {
-			errors.productName = "Product name does not match";
-			console.log("Product name length must be between 2 and 50 characters");
+			errors.productName = "Product name length must be between 2 and 50 characters";
+			console.log("Product name does not match");
 		}
 
 		if (!product.price) {
-			errors.price = "No product price";
-			console.log("Insert product price");
+			errors.price = "Insert valid product price";
+			console.log("Invalid/No product price");
 		}
 
 		if (!product.quantity) {
-			errors.price = "No product quantity";
-			console.log("Insert product quantity");
+			errors.price = "Insert product quantity";
+			console.log("No product quantity");
 		}
 
 		if (Object.keys(errors).length === 0) {
-			await ProductDB.crate(product)
+			await ProductDB.create(product)
 				.then(() => {
 					res.status(201).send({ message: "Product created" });
 				})
 				.catch(() => {
 					res.status(500).send({ message: "Server error" });
 				});
+		} else {
+			res.status(400).send(errors);
 		}
 	},
 
 	getProducts: async (req, res) => {
 		const params = {
-			order: req.query.order,
+			order: "ASC",
 			name: "%%",
 		};
+		if (req.query.order) {
+			params.order = req.query.order.toUpperCase();
+		}
 		if (req.query.name) {
 			params.name = "%" + req.query.name + "%";
 		}
-
+		console.log(params.name);
 		try {
 			const products = await ProductDB.findAll({
 				where: {
-					[Op.like]: params.name,
+					name: {
+						[Op.like]: params.name,
+					},
 				},
-				order: [["name", params.order]],
+				order: [["price", params.order]],
 			});
 			res.status(201).send(products);
 		} catch {
@@ -67,42 +75,70 @@ const controller = {
 
 	getProduct: async (req, res) => {
 		try {
-			const product = await ProductDB.findbyPk(req.params.id);
+			const product = await ProductDB.findByPk(req.params.id);
 			if (product) {
 				res.status(201).send(product);
 			} else {
 				res.status(404).send({ message: "Product not found" });
 			}
-		} catch {
+		} catch (e) {
+			console.log(e);
 			res.status(500).send({ message: "Server error" });
 		}
 	},
 
 	updateProduct: async (req, res) => {
-		const product = await ProductDB.findbyPk(req.params.id);
+		const product = await ProductDB.findByPk(req.params.id);
 		if (product) {
-			await prod
-				.update({
-					name: req.body.name,
-					price: req.body.price,
-					quantity: req.body.quantity,
-					description: req.body.description,
-					coments: req.body.coments,
-					rating: req.body.rating,
-				})
-				.then(() => {
-					res.status(201).send({ message: "Product updated" });
-				})
-				.catch(() => {
-					res.status(500).send({ message: "Server error" });
-				});
+			const errors = {};
+
+			if (!product.name) {
+				errors.productName = "Insert product name";
+				console.log("No product name");
+			} else if (!product.name.match("^.{2,50}$")) {
+				errors.productName = "Product name length must be between 2 and 50 characters";
+				console.log("Product name does not match");
+			}
+
+			if (!product.price) {
+				errors.price = "Insert product price";
+				console.log("No product price");
+			} else if (product.price === 0) {
+				errors.price = "Price can't be zero";
+				console.log("Invalid price");
+			}
+
+			if (!product.quantity) {
+				errors.price = "Insert product quantity";
+				console.log("No product quantity");
+			}
+
+			if (Object.keys(errors).length === 0) {
+				await product
+					.update({
+						name: req.body.name,
+						price: req.body.price,
+						quantity: req.body.quantity,
+						description: req.body.description,
+						comments: req.body.comments,
+						rating: req.body.rating,
+					})
+					.then(() => {
+						res.status(201).send({ message: "Product updated" });
+					})
+					.catch(() => {
+						res.status(500).send({ message: "Server error" });
+					});
+			} else {
+				res.status(400).send(errors);
+			}
 		} else {
 			res.status(404).send({ message: "Product not found" });
 		}
 	},
 
-	deelteProduct: async (req, rez) => {
-		await ProductDB.findbyPk(req.params.id)
+	delteProduct: async (req, res) => {
+		await ProductDB.findByPk(req.params.id)
 			.then(async (product) => {
 				if (product) {
 					await product.destroy();
