@@ -29,7 +29,7 @@ const controller = {
 		}
 
 		if (!product.quantity) {
-			errors.price = "Insert product quantity";
+			errors.quantity = "Insert product quantity";
 			console.log("No product quantity");
 		}
 
@@ -57,7 +57,6 @@ const controller = {
 		if (req.query.name) {
 			params.name = "%" + req.query.name + "%";
 		}
-		console.log(params.name);
 		try {
 			const products = await ProductDB.findAll({
 				where: {
@@ -92,24 +91,24 @@ const controller = {
 		if (product) {
 			const errors = {};
 
-			if (!product.name) {
+			if (!req.body.name) {
 				errors.productName = "Insert product name";
 				console.log("No product name");
-			} else if (!product.name.match("^.{2,50}$")) {
+			} else if (!req.body.name.match("^.{2,50}$")) {
 				errors.productName = "Product name length must be between 2 and 50 characters";
 				console.log("Product name does not match");
 			}
 
-			if (!product.price) {
+			if (!req.body.price) {
 				errors.price = "Insert product price";
 				console.log("No product price");
-			} else if (product.price === 0) {
+			} else if (req.body.price === 0) {
 				errors.price = "Price can't be zero";
 				console.log("Invalid price");
 			}
 
-			if (!product.quantity) {
-				errors.price = "Insert product quantity";
+			if (!req.body.quantity) {
+				errors.quantity = "Insert product quantity";
 				console.log("No product quantity");
 			}
 

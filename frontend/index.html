@@ -8,11 +8,37 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+		<!-- Toasters -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 	</head>
-	<body>
+	<body class="bg-dark text-white">
 		<div class="container">
-			<h5 class="display-4 mt-3">InfoWorld Test</h5>
-			<table class="table table-striped mt-3">
+			<div class="row">
+				<div class="col-md-10">
+					<h5 class="display-4 mt-2 pb-1">InfoWorld Test</h5>
+				</div>
+				<div class="col-md-2 d-flex align-self-center mt-3">
+					<a href="create.html" class="btn btn-secondary text-white btn-block"> Add new Product</a>
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<div class="col-md-3">
+					<select name="price" class="custom-select bg-dark text-white" id="select">
+						<option selected value="ASC">Price: Low to High</option>
+						<option value="DESC">Price: High to Low</option>
+					</select>
+				</div>
+				<div class="col-md-7">
+					<input type="text" class="form-control bg-dark text-white" placeholder="Product name..." id="name" />
+				</div>
+				<div class="col-md-2">
+					<button class="btn btn-secondary text-white btn-block" onclick="search()">Seatch</button>
+				</div>
+			</div>
+
+			<table class="table table-dark table-striped table-bordered mt-3">
 				<thead>
 					<tr class="text-center">
 						<th>Name</th>
@@ -24,29 +50,15 @@
 						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody id="t-body">
-					<tr class="text-center">
-						<td>Product 1</td>
-						<td>1.1</td>
-						<td>100</td>
-						<td>First product</td>
-						<td>No comments</td>
-						<td>1/5</td>
-						<th>
-							<div class="d-flex justify-content-center">
-								<form action="edit.html" method="GET">
-									<input type="hidden" name="id" value="1" />
-									<input type="submit" class="btn font-weight-bold" value="Edit" />
-								</form>
-								<button href="#" class="btn font-weight-bold">Delete</button>
-							</div>
-						</th>
-					</tr>
-				</tbody>
+				<tbody id="t-body"></tbody>
 			</table>
 		</div>
 	</body>
 
 	<script src="./JavaScript/index.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<!-- Toasters -->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </html>
