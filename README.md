@@ -16,4 +16,4 @@
 
 >  start the server and go to localhost:yourport/reset to create the table and add dummy data
 
->  go tolocalhost:yourport to use the app
+>  go to localhost:yourport to use the app
